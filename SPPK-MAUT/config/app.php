@@ -127,42 +127,30 @@ return [
     |--------------------------------------------------------------------------
     | Autoloaded Service Providers
     |--------------------------------------------------------------------------
-    | HANYA MENYISAKAN PROVIDER YANG SANGAT ESENSIAL
+    | HANYA MENYISAKAN PROVIDER YANG SANGAT ESENSIAL DAN PACKAGE LUAR
     */
 
     'providers' => [
-        // Service Providers Bawaan Laravel (Hanya yang paling dasar yang dijaga)
-        // Illuminate\Auth\AuthServiceProvider::class,           // Dihapus/dikomentari (untuk Auth)
-        // Illuminate\Broadcasting\BroadcastServiceProvider::class, // Dihapus/dikomentari
-        // Illuminate\Bus\BusServiceProvider::class,            // Dihapus/dikomentari
-        Illuminate\Cache\CacheServiceProvider::class,         // Penting untuk caching
-        Illuminate\Foundation\Providers\ConsoleSupportServiceProvider::class, // Penting untuk Artisan
-        Illuminate\Cookie\CookieServiceProvider::class,       // Penting untuk sesi dasar
-        Illuminate\Database\DatabaseServiceProvider::class,   // Penting jika menggunakan DB
-        Illuminate\Encryption\EncryptionServiceProvider::class, // Penting
-        Illuminate\Filesystem\FilesystemServiceProvider::class, // PENTING! Mungkin ini yang merujuk [files]
-        Illuminate\Foundation\Providers\FoundationServiceProvider::class, // Inti Laravel
-        Illuminate\Hashing\HashServiceProvider::class,        // Penting
-        Illuminate\Mail\MailServiceProvider::class,           // Dihapus/dikomentari
-        Illuminate\Notifications\NotificationServiceProvider::class, // Dihapus/dikomentari
-        Illuminate\Pagination\PaginationServiceProvider::class, // Dihapus/dikomentari
-        Illuminate\Pipeline\PipelineServiceProvider::class,   // Penting
-        Illuminate\Queue\QueueServiceProvider::class,         // Dihapus/dikomentari
-        Illuminate\Redis\RedisServiceProvider::class,         // Dihapus/dikomentari
-        Illuminate\Auth\Passwords\PasswordResetServiceProvider::class, // Dihapus/dikomentari
-        Illuminate\Session\SessionServiceProvider::class,     // Penting
-        Illuminate\Translation\TranslationServiceProvider::class, // Penting
-        Illuminate\Validation\ValidationServiceProvider::class, // Penting
-        Illuminate\View\ViewServiceProvider::class,           // Penting untuk View
-        Illuminate\Routing\RoutingServiceProvider::class,     // Paling penting untuk routing
+        // Service Providers Bawaan Laravel
+        Illuminate\Cache\CacheServiceProvider::class,
+        Illuminate\Foundation\Providers\ConsoleSupportServiceProvider::class,
+        Illuminate\Cookie\CookieServiceProvider::class,
+        Illuminate\Database\DatabaseServiceProvider::class,
+        Illuminate\Encryption\EncryptionServiceProvider::class,
+        Illuminate\Filesystem\FilesystemServiceProvider::class,
+        Illuminate\Foundation\Providers\FoundationServiceProvider::class,
+        Illuminate\Hashing\HashServiceProvider::class,
+        Illuminate\Pipeline\PipelineServiceProvider::class,
+        Illuminate\Session\SessionServiceProvider::class,
+        Illuminate\Translation\TranslationServiceProvider::class,
+        Illuminate\Validation\ValidationServiceProvider::class,
+        Illuminate\View\ViewServiceProvider::class,
+        Illuminate\Routing\RoutingServiceProvider::class,
 
         // Application Service Providers
-        App\Providers\AppServiceProvider::class, // Provider aplikasi yang ada
-        // App\Providers\AuthServiceProvider::class, // (Sudah dihapus)
-        // App\Providers\EventServiceProvider::class, // (Sudah dihapus)
-        // App\Providers\RouteServiceProvider::class, // (Sudah dihapus)
+        App\Providers\AppServiceProvider::class,
 
-        /* DOMPDF */
+        /* PACKAGE LUAR */
         \Barryvdh\DomPDF\ServiceProvider::class,
     ],
 
@@ -175,7 +163,7 @@ return [
     'aliases' => [
         // ... (Semua aliases bawaan Laravel tetap dipertahankan)
         
-        /* ALIAS DOMPDF */
+        /* ALIAS PACKAGE LUAR */
         'PDF' => \Barryvdh\DomPDF\Facade::class,
     ],
 

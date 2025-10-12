@@ -123,4 +123,42 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+|--------------------------------------------------------------------------
+| Autoloaded Service Providers
+|--------------------------------------------------------------------------
+|
+| The service providers listed here will be automatically loaded on the
+| request to your application. Feel free to add your own services to
+| this array to grant expanded functionality to your applications.
+|
+*/
+
+'providers' => ServiceProvider::defaultProviders()->merge([
+    // ... existing providers
+    
+    /* Tambahkan baris ini: */
+    \Barryvdh\DomPDF\ServiceProvider::class,
+    
+])->toArray(),
+
+/*
+|--------------------------------------------------------------------------
+| Class Aliases
+|--------------------------------------------------------------------------
+|
+| This array of class aliases will be registered when this application
+| is started. However, feel free to register as many as you wish as
+| the aliases are "lazy" loaded so they don't hinder performance.
+|
+*/
+
+'aliases' => Facade::defaultAliases()->merge([
+    // ... existing aliases
+    
+    /* Tambahkan baris ini: */
+    'PDF' => \Barryvdh\DomPDF\Facade::class,
+    
+])->toArray(),
+
 ];

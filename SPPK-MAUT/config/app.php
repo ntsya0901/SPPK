@@ -124,41 +124,59 @@ return [
     ],
 
     /*
-|--------------------------------------------------------------------------
-| Autoloaded Service Providers
-|--------------------------------------------------------------------------
-|
-| The service providers listed here will be automatically loaded on the
-| request to your application. Feel free to add your own services to
-| this array to grant expanded functionality to your applications.
-|
-*/
+    |--------------------------------------------------------------------------
+    | Autoloaded Service Providers
+    |--------------------------------------------------------------------------
+    | HANYA MENYISAKAN PROVIDER YANG SANGAT ESENSIAL
+    */
 
-'providers' => ServiceProvider::defaultProviders()->merge([
-    // ... existing providers
-    
-    /* Tambahkan baris ini: */
-    \Barryvdh\DomPDF\ServiceProvider::class,
-    
-])->toArray(),
+    'providers' => [
+        // Service Providers Bawaan Laravel (Hanya yang paling dasar yang dijaga)
+        // Illuminate\Auth\AuthServiceProvider::class,           // Dihapus/dikomentari (untuk Auth)
+        // Illuminate\Broadcasting\BroadcastServiceProvider::class, // Dihapus/dikomentari
+        // Illuminate\Bus\BusServiceProvider::class,            // Dihapus/dikomentari
+        Illuminate\Cache\CacheServiceProvider::class,         // Penting untuk caching
+        Illuminate\Foundation\Providers\ConsoleSupportServiceProvider::class, // Penting untuk Artisan
+        Illuminate\Cookie\CookieServiceProvider::class,       // Penting untuk sesi dasar
+        Illuminate\Database\DatabaseServiceProvider::class,   // Penting jika menggunakan DB
+        Illuminate\Encryption\EncryptionServiceProvider::class, // Penting
+        Illuminate\Filesystem\FilesystemServiceProvider::class, // PENTING! Mungkin ini yang merujuk [files]
+        Illuminate\Foundation\Providers\FoundationServiceProvider::class, // Inti Laravel
+        Illuminate\Hashing\HashServiceProvider::class,        // Penting
+        Illuminate\Mail\MailServiceProvider::class,           // Dihapus/dikomentari
+        Illuminate\Notifications\NotificationServiceProvider::class, // Dihapus/dikomentari
+        Illuminate\Pagination\PaginationServiceProvider::class, // Dihapus/dikomentari
+        Illuminate\Pipeline\PipelineServiceProvider::class,   // Penting
+        Illuminate\Queue\QueueServiceProvider::class,         // Dihapus/dikomentari
+        Illuminate\Redis\RedisServiceProvider::class,         // Dihapus/dikomentari
+        Illuminate\Auth\Passwords\PasswordResetServiceProvider::class, // Dihapus/dikomentari
+        Illuminate\Session\SessionServiceProvider::class,     // Penting
+        Illuminate\Translation\TranslationServiceProvider::class, // Penting
+        Illuminate\Validation\ValidationServiceProvider::class, // Penting
+        Illuminate\View\ViewServiceProvider::class,           // Penting untuk View
+        Illuminate\Routing\RoutingServiceProvider::class,     // Paling penting untuk routing
 
-/*
-|--------------------------------------------------------------------------
-| Class Aliases
-|--------------------------------------------------------------------------
-|
-| This array of class aliases will be registered when this application
-| is started. However, feel free to register as many as you wish as
-| the aliases are "lazy" loaded so they don't hinder performance.
-|
-*/
+        // Application Service Providers
+        App\Providers\AppServiceProvider::class, // Provider aplikasi yang ada
+        // App\Providers\AuthServiceProvider::class, // (Sudah dihapus)
+        // App\Providers\EventServiceProvider::class, // (Sudah dihapus)
+        // App\Providers\RouteServiceProvider::class, // (Sudah dihapus)
 
-'aliases' => Facade::defaultAliases()->merge([
-    // ... existing aliases
-    
-    /* Tambahkan baris ini: */
-    'PDF' => \Barryvdh\DomPDF\Facade::class,
-    
-])->toArray(),
+        /* DOMPDF */
+        \Barryvdh\DomPDF\ServiceProvider::class,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Class Aliases
+    |--------------------------------------------------------------------------
+    */
+
+    'aliases' => [
+        // ... (Semua aliases bawaan Laravel tetap dipertahankan)
+        
+        /* ALIAS DOMPDF */
+        'PDF' => \Barryvdh\DomPDF\Facade::class,
+    ],
 
 ];

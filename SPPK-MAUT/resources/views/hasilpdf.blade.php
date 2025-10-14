@@ -22,6 +22,12 @@
         padding: 5px;
         text-align: center;
     }
+
+    /* Gaya tambahan untuk judul bagian */
+    h4 {
+        margin-top: 20px;
+        margin-bottom: 5px;
+    }
     </style>
 </head>
 
@@ -30,20 +36,6 @@
 
     <h4>Bobot Kriteria:</h4>
     <p>{{ implode(' | ', $bobot) }}</p>
-
-    <h4>Hasil Normalisasi:</h4>
-    <table>
-        <tr>
-            <th>Alternatif</th>
-            <th>Nilai Normalisasi</th>
-        </tr>
-        @foreach ($normalisasi as $n)
-        <tr>
-            <td>{{ $n['nama'] }}</td>
-            <td>{{ implode(', ', $n['normalisasi']) }}</td>
-        </tr>
-        @endforeach
-    </table>
 
     <h4>Hasil Akhir Evaluasi:</h4>
     <table>

@@ -10,7 +10,8 @@ class SPPKController extends Controller
 {
     public function index()
     {
-        return view('viewcoba'); // halaman input kriteria & file
+        // Halaman input kriteria, bobot, tipe, dan file
+        return view('viewcoba');
     }
 
     public function hitung(Request $request)
@@ -20,9 +21,12 @@ class SPPKController extends Controller
             'file' => 'required|mimes:xlsx,xls,csv'
         ]);
 
+        // Ambil input bobot dan tipe kriteria
         $bobot = $request->bobot;
+        $tipeKriteria = $request->input('tipe_kriteria'); 
+        // contoh: ['benefit', 'cost', 'benefit', ...]
 
-        // Pastikan total bobot = 1 (jika user isi dalam bentuk persen)
+        // Pastikan total bobot = 1
         $totalBobot = array_sum($bobot);
         $bobot = array_map(fn($b) => $b / $totalBobot, $bobot);
 
@@ -31,7 +35,7 @@ class SPPKController extends Controller
         $header = array_map('trim', $raw[0]);
         $rows = array_slice($raw, 1);
 
-        // deteksi kolom nama (non-numerik pertama)
+        // Deteksi kolom nama alternatif (non-numerik pertama)
         $firstRow = $rows[0];
         $indexNama = null;
         foreach ($firstRow as $i => $val) {
@@ -45,7 +49,7 @@ class SPPKController extends Controller
             return back()->with('error', 'Tidak ditemukan kolom nama alternatif!');
         }
 
-        // ubah jadi array data alternatif
+        // Ubah data ke format array alternatif
         $data = [];
         foreach ($rows as $row) {
             $nama = $row[$indexNama];
@@ -53,7 +57,7 @@ class SPPKController extends Controller
 
             foreach ($row as $i => $val) {
                 if ($i != $indexNama && is_numeric($val)) {
-                    $kriteria[] = (float)$val;
+                    $kriteria[] = (float) $val;
                 }
             }
 
@@ -63,64 +67,45 @@ class SPPKController extends Controller
             ];
         }
 
-        // === NORMALISASI (MIN-MAX) ===
-$jumlahKriteria = count($data[0]['kriteria']);
+        // === NORMALISASI (MIN-MAX, dengan BENEFIT & COST) ===
+        $jumlahKriteria = count($data[0]['kriteria']);
+        $nilaiMin = array_fill(0, $jumlahKriteria, INF);
+        $nilaiMax = array_fill(0, $jumlahKriteria, -INF);
 
-// Inisialisasi nilai min dan max untuk tiap kriteria
-$nilaiMin = array_fill(0, $jumlahKriteria, INF);
-$nilaiMax = array_fill(0, $jumlahKriteria, -INF);
-
-// Cari nilai min dan max dari setiap kriteria
-foreach ($data as $d) {
-    foreach ($d['kriteria'] as $i => $nilai) {
-        if ($nilai < $nilaiMin[$i]) {
-            $nilaiMin[$i] = $nilai; // xi minimum
+        // Cari nilai min dan max tiap kriteria
+        foreach ($data as $d) {
+            foreach ($d['kriteria'] as $i => $nilai) {
+                if ($nilai < $nilaiMin[$i]) $nilaiMin[$i] = $nilai;
+                if ($nilai > $nilaiMax[$i]) $nilaiMax[$i] = $nilai;
+            }
         }
-        if ($nilai > $nilaiMax[$i]) {
-            $nilaiMax[$i] = $nilai; // xi maksimum
+
+        // Proses normalisasi tiap alternatif
+        $normalisasi = [];
+        foreach ($data as $d) {
+            $n = [];
+            foreach ($d['kriteria'] as $i => $nilai) {
+                $min = $nilaiMin[$i];
+                $max = $nilaiMax[$i];
+                $tipe = $tipeKriteria[$i] ?? 'benefit'; // default benefit
+
+                if ($max == $min) {
+                    $n[] = 1;
+                } else {
+                    if ($tipe === 'benefit') {
+                        $n[] = ($nilai - $min) / ($max - $min);
+                    } else { // cost
+                        $n[] = ($max - $nilai) / ($max - $min);
+                    }
+                }
+            }
+            $normalisasi[] = [
+                'nama' => $d['nama'],
+                'normalisasi' => $n
+            ];
         }
-    }
-}
 
-// Normalisasi tiap alternatif
-$normalisasi = [];
-foreach ($data as $d) {
-    $n = [];
-    foreach ($d['kriteria'] as $i => $nilai) {
-        $min = $nilaiMin[$i];
-        $max = $nilaiMax[$i];
-
-        if ($max == $min) {
-            // Semua nilai sama → dianggap 1 (netral)
-            $n[] = 1;
-        } else {
-            // Normalisasi min-max
-            $n[] = ($nilai - $min) / ($max - $min);
-        }
-    }
-    $normalisasi[] = [
-        'nama' => $d['nama'],
-        'normalisasi' => $n
-    ];
-}
-
-// === EVALUASI (PERHITUNGAN MAUT) ===
-$hasil = [];
-foreach ($normalisasi as $d) {
-    $utility = 0;
-    foreach ($d['normalisasi'] as $i => $val) {
-        $utility += $val * $bobot[$i]; // perkalian normalisasi × bobot
-    }
-    $hasil[] = [
-        'nama' => $d['nama'],
-        'nilai' => round($utility, 4)
-    ];
-}
-
-// Urutkan hasil berdasarkan nilai tertinggi (peringkat)
-usort($hasil, fn($a, $b) => $b['nilai'] <=> $a['nilai']);
-
-        // === EVALUASI MAUT ===
+        // === PERHITUNGAN NILAI AKHIR (EVALUASI MAUT) ===
         $hasil = [];
         foreach ($normalisasi as $d) {
             $utility = 0;
@@ -141,6 +126,9 @@ usort($hasil, fn($a, $b) => $b['nilai'] <=> $a['nilai']);
             'hasil' => $hasil,
             'bobot' => $bobot,
             'normalisasi' => $normalisasi,
+            'nilaiMin' => $nilaiMin,
+            'nilaiMax' => $nilaiMax,
+            'tipeKriteria' => $tipeKriteria
         ]);
 
         $filename = 'hasil_sppk_' . time() . '.pdf';
